@@ -1,25 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import '../node_modules/bulma/css/bulma.min.css';
+import {LoginComponent} from "./components/login";
+import {TasksComponent} from "./components/tasks";
+
+type User = {
+  email: string
+  name: string
+}
+
+export const AppContext = React.createContext<{
+  user: User|null,
+  setUser(user: User): void
+}>({
+  user: null,
+  setUser: () => {},
+});
 
 function App() {
+
+  const [user, setUser] = React.useState<User|null>(null);
+
+  React.useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppContext.Provider value={{ user, setUser }}>
+      <div className="App">
+        <main>
+          <h1 className="title has-text-white">Todo App</h1>
+          {!user && <LoginComponent />}
+          {user && <TasksComponent />}
+        </main>
+      </div>
+    </AppContext.Provider>
   );
 }
 
